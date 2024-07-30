@@ -25,39 +25,51 @@ const AlcoholList = ({ navigation }) => {
   const scrollViewRef = useRef(null);
   const [smiley, setSmiley] = useState('😔');
 
-  useEffect(() => {
-    const fetchAlcohols = async () => {
-      try {
-        const response = await axios.get('http://localhost:5452/alcool');
-        setAlcohols(response.data);
-        setFilteredAlcohols(response.data);
-      } catch (error) {
-        console.error('Error fetching Alcohols:', error);
+useEffect(() => {
+  const fetchAlcohols = async () => {
+    try {
+      const response = await fetch('http://localhost:5452/alcool');
+      if (!response.ok) {
+        throw new Error('Error fetching Alcohols');
       }
-    };
+      const data = await response.json();
+      setAlcohols(data);
+      setFilteredAlcohols(data);
+    } catch (error) {
+      console.error('Error fetching Alcohols:', error);
+    }
+  };
 
-    const fetchTypes = async () => {
-      try {
-        const response = await axios.get('http://localhost:5452/alcool/types');
-        setTypes(response.data);
-      } catch (error) {
-        console.error('Error fetching types:', error);
+  const fetchTypes = async () => {
+    try {
+      const response = await fetch('http://localhost:5452/alcool/types');
+      if (!response.ok) {
+        throw new Error('Error fetching types');
       }
-    };
+      const data = await response.json();
+      setTypes(data);
+    } catch (error) {
+      console.error('Error fetching types:', error);
+    }
+  };
 
-    const fetchBestAlcohols = async () => {
-      try {
-        const response = await axios.get('http://localhost:5452/alcool/best');
-        setBestAlcohols(response.data);
-      } catch (error) {
-        console.error('Error fetching best Alcohols:', error);
+  const fetchBestAlcohols = async () => {
+    try {
+      const response = await fetch('http://localhost:5452/alcool/best');
+      if (!response.ok) {
+        throw new Error('Error fetching best Alcohols');
       }
-    };
+      const data = await response.json();
+      setBestAlcohols(data);
+    } catch (error) {
+      console.error('Error fetching best Alcohols:', error);
+    }
+  };
 
-    fetchAlcohols();
-    fetchTypes();
-    fetchBestAlcohols();
-  }, []);
+  fetchAlcohols();
+  fetchTypes();
+  fetchBestAlcohols();
+}, []);
 
   useEffect(() => {
     filterAlcohols();

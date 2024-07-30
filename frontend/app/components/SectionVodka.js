@@ -1,10 +1,10 @@
 import React, { useEffect, useRef } from 'react';
 import { View, Text, Image, StyleSheet, Animated } from 'react-native';
 
-const SectionMartini = () => {
-  const imageSource = { uri: 'https://i.pinimg.com/564x/d0/f1/ca/d0f1ca5fbabe7dc92da478d891219169.jpg' };
-  const title = "Martini Bleu";
-  const description = "Un cocktail élégant et rafraîchissant, le Martini Bleu est préparé avec du gin, du vermouth et une touche de liqueur de curaçao bleu, garni d'une rondelle de citron.";
+const SectionVodka = () => {
+  const imageSource = { uri: 'https://i.pinimg.com/564x/46/ae/cd/46aecda5cfc82c615118af0847b0f61a.jpg' }; // Image de vodka
+  const title = "Vodka Luxe GREYGOOSE";
+  const description = "Découvrez la GREYGOOSE Vodka Luxe, une vodka raffinée et élégante, fabriquée avec des ingrédients de première qualité pour une expérience pure et veloutée.";
 
   const titleOpacity = useRef(new Animated.Value(0)).current;
   const descriptionOpacity = useRef(new Animated.Value(0)).current;
@@ -26,7 +26,6 @@ const SectionMartini = () => {
 
   return (
     <View style={styles.container}>
-      <Image source={imageSource} style={styles.image} />
       <View style={styles.textContainer}>
         <Animated.Text style={[styles.title, { opacity: titleOpacity }]}>
           {title}
@@ -35,6 +34,8 @@ const SectionMartini = () => {
           {description}
         </Animated.Text>
       </View>
+      <Image source={imageSource} style={styles.image} />
+
     </View>
   );
 };
@@ -42,12 +43,12 @@ const SectionMartini = () => {
 const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
-    height: 220,
+    height: 290,
     width: '100%',
     alignItems: 'center',
     padding: 20,
-        backgroundColor: 'darkgray',
-        borderRadius: 10,
+    backgroundColor: '#e3f2fd', // Bleu clair pour le thème vodka
+    borderRadius: 10,
     elevation: 3,
     marginBottom: 16,
   },
@@ -63,13 +64,13 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 24,
     fontWeight: 'bold',
-    color: '#333',
+    color: '#007bff', // Bleu pour s'harmoniser avec le thème vodka
   },
   description: {
     fontSize: 16,
-    color: '#000',
+    color: '#333', // Couleur de texte légèrement plus sombre pour le contraste
     marginTop: 8,
   },
 });
 
-export default SectionMartini;
+export default SectionVodka;

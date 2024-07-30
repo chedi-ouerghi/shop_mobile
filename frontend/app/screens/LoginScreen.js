@@ -3,7 +3,8 @@ import { View, Text, TextInput, StyleSheet, TouchableOpacity, ScrollView } from 
 import axios from 'axios';
 import Button from '../components/Button';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome'; // Renommé en FontAwesomeIcon
+import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const LoginScreen = ({ navigation, route }) => {
   const [username, setUsername] = useState('');
@@ -16,8 +17,11 @@ const LoginScreen = ({ navigation, route }) => {
         email: username,
         password,
       });
-      const { token } = response.data;
+      const { token, user } = response.data;
       console.log('Login successful, token:', token);
+      await AsyncStorage.setItem('token', token); // Save token in AsyncStorage
+      await AsyncStorage.setItem('user', JSON.stringify(user)); // Save user info
+
       if (fromPayment) {
         navigation.navigate('Payment');
       } else {
@@ -37,13 +41,13 @@ const LoginScreen = ({ navigation, route }) => {
         <Text style={styles.title}>Log in</Text>
       </View>
       <View style={styles.socialButtonsContainer}>
-          <TouchableOpacity style={styles.socialButton}>
-            <FontAwesomeIcon name="google" size={24} color="#FFF" />
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.socialButton}>
-            <FontAwesomeIcon name="github" size={24} color="#FFF" />
-          </TouchableOpacity>
-        </View>
+        <TouchableOpacity style={styles.socialButton}>
+          <FontAwesomeIcon name="google" size={24} color="#FFF" />
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.socialButton}>
+          <FontAwesomeIcon name="github" size={24} color="#FFF" />
+        </TouchableOpacity>
+      </View>
       <ScrollView contentContainerStyle={styles.formContainer}>
         <View style={styles.form}>
           <View style={styles.inputContainer}>

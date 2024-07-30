@@ -1,12 +1,12 @@
+
 import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, Dimensions, ScrollView, TouchableOpacity, ImageBackground, Image } from 'react-native';
 import axios from 'axios';
-import Button from '../components/Button';
 import { useNavigation } from '@react-navigation/native';
 import { globalStyles } from '../styles/globalStyles';
 import ContactUs from '../components/ContactUs';
-import SectionMartini from '../components/SectionMartini';
-import SectionGin from '../components/SectionGin';
+import SectionVodka from '../components/SectionVodka';
+import VodkaCube from '../components/VodkaCube';
 import GallerySection from '../components/GallerySection';
 import SectionAccessoire from '../components/SectionAccessoire';
 import Animated, { useSharedValue, useAnimatedStyle, interpolate } from 'react-native-reanimated';
@@ -16,13 +16,13 @@ const { width } = Dimensions.get('window');
 const HomeScreen = () => {
   const [alcoholData, setAlcoholData] = useState([]);
   const navigation = useNavigation();
-  const scrollY = useSharedValue(0);  
+  const scrollY = useSharedValue(0);
 
   useEffect(() => {
     const fetchAlcoholData = async () => {
       try {
         const response = await axios.get('http://localhost:5452/alcool');
-        setAlcoholData(response.data.slice(0, 4)); // Limiter à 4 alcools
+        setAlcoholData(response.data.slice(0, 4));
       } catch (error) {
         console.error('Error fetching alcohol data:', error);
       }
@@ -48,28 +48,30 @@ const HomeScreen = () => {
       onScroll={handleScrollY}
       scrollEventThrottle={16}
     >
-      <View style={styles.banner}>
+  <View style={styles.banner}>
         <ImageBackground
-          source={{ uri: 'https://i.pinimg.com/originals/71/50/2c/71502cc09190f26ed75243482b42c2c3.gif' }}
+          source={{ uri: 'https://i.giphy.com/media/v1.Y2lkPTc5MGI3NjExYXcxejl2cWE0YjFrYnV6dmhhaDAweW5sZzFuZDdjOGpkaXU1Ym5kbCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/26xBJlRPiabEcQHHa/giphy.gif' }}
           style={styles.backgroundImage}
           resizeMode="cover"
         />
-        <Image
-          source={require('../../assets/images/Bruadarach.png')}
-          style={styles.specialCardImage}
-        />
-        <Animated.Text style={[styles.animatedText, titleAnimatedStyle]}>
-          World of Luxury
-        </Animated.Text>
-        <View style={styles.buttonContainerBanner}>
-          <Button title="Découvrez nos offres" onPress={() => {}} />
+      
+      {/* <View style={styles.buttonContainerBanner}>
+        <Button title="Explorez nos créations" onPress={() => {}} />
         </View>
-      </View>
+        <Animated.Text style={[styles.animatedText, titleAnimatedStyle]}>
+        Absolut Vodka: L'Élégance Suédoise
+      </Animated.Text> */}
+    </View>
+
+
+       <View style={styles.containerCube}>
+      <VodkaCube />
+    </View>
 
       <AlcoholCards alcoholData={alcoholData} />
 
-      <SectionMartini />
-      <SectionGin />
+      <SectionVodka />
+      {/* <SectionGin /> */}
       <SectionAccessoire />
 
       <GallerySection/>
@@ -85,13 +87,15 @@ const AlcoholCards = ({ alcoholData }) => {
 
   return (
     <View style={styles.cardSection}>
-      <Text style={styles.cardHeader}>Nos Alcools</Text>
-      <TouchableOpacity
-        style={styles.seeMoreButton}
-        onPress={() => navigation.navigate('Alcohol')}
-      >
-        <Text style={styles.seeMoreText}>Voir plus</Text>
-      </TouchableOpacity>
+      <View style={styles.titreCARDHOME}>
+        <Text style={styles.cardHeader}>Nos Vodkas </Text>
+        <TouchableOpacity
+          style={styles.seeMoreButton}
+          onPress={() => navigation.navigate('Alcohol')}
+        >
+          <Text style={styles.seeMoreText}>Découvrir plus</Text>
+        </TouchableOpacity>
+      </View>
       <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.cardContainer}>
         {alcoholData.map(alcohol => (
           <View key={alcohol.id} style={styles.card}>
@@ -105,6 +109,7 @@ const AlcoholCards = ({ alcoholData }) => {
   );
 };
 
+
 const styles = StyleSheet.create({
   banner: {
     width: '100%',
@@ -113,14 +118,16 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     overflow: 'hidden',
     marginTop: 20,
+    backgroundColor: '#000', 
   },
   backgroundImage: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    width: '100%',
-    height: '100%',
-    blurRadius: 15,
+    width: '95%', 
+    height: '95%', 
+    marginTop: '4%',
+    marginLeft: '4%',
   },
   specialCardImage: {
     width: '40%',
@@ -137,6 +144,18 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontSize: 18,
     fontWeight: 'bold',
+  },
+  titreCARDHOME: {
+      flexDirection: 'row', 
+    justifyContent: 'space-between', 
+    alignItems: 'center', 
+    paddingHorizontal: 20, 
+    marginBottom: 20,
+  },
+    cardHeader: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: '#000',
   },
   buttonContainerBanner: {
     position: 'absolute',
@@ -198,6 +217,14 @@ const styles = StyleSheet.create({
   seeMoreText: {
     color: '#fff',
     fontWeight: 'bold',
+  },
+   containerCube: {
+    flex: 1,
+    flexDirection: 'row', 
+    justifyContent: 'center', 
+    alignItems: 'center', 
+    
+    
   },
 });
 

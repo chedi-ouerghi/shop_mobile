@@ -109,7 +109,7 @@ const getAlcoolTypes = async (req, res) => {
     console.log('Fetching distinct alcohol types...');
     
     // Requête simplifiée pour récupérer les types distincts
-    const query = 'SELECT DISTINCT type FROM alcoolproduct WHERE type IS NOT NULL AND type != ""';
+    const query = "SELECT DISTINCT type FROM alcoolproduct WHERE type IS NOT NULL AND type != ''";
     const [rows] = await pool.query(query);
 
     // Vérifiez les résultats dans les logs

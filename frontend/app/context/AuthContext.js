@@ -1,17 +1,17 @@
 // context/AuthContext.js
-import React, { createContext, useState, useContext } from 'react';
+import React, { createContext, useContext, useState } from 'react';
 
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
-  const [user, setUser] = useState(null); // null indicates no user is logged in
+  const [user, setUser] = useState(null);
 
   const login = (userData) => {
-    setUser(userData); // Store user data on login
+    setUser(userData);
   };
 
   const logout = () => {
-    setUser(null); // Clear user data on logout
+    setUser(null);
   };
 
   return (

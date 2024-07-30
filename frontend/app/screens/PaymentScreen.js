@@ -1,20 +1,35 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TextInput, StyleSheet, Alert } from 'react-native';
+import { View, Text, TextInput, StyleSheet } from 'react-native';
 import axios from 'axios';
 import { globalStyles } from '../styles/globalStyles';
 import Button from '../components/Button';
-import { useAuth } from '../context/AuthContext';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import Toast from 'react-native-toast-message';
 
 const PaymentScreen = ({ route, navigation }) => {
-  const { user } = useAuth();
   const [cardNumber, setCardNumber] = useState('');
   const [expiryDate, setExpiryDate] = useState('');
   const [cvv, setCvv] = useState('');
   const [cart, setCart] = useState(route.params?.cart || []);
+  const [token, setToken] = useState('');
+
+  useEffect(() => {
+    const getToken = async () => {
+      try {
+        const storedToken = await AsyncStorage.getItem('token');
+        if (storedToken) {
+          setToken(storedToken);
+        }
+      } catch (error) {
+        console.error('Error retrieving token:', error);
+      }
+    };
+
+    getToken();
+  }, []);
 
   const handlePayment = async () => {
-    if (!user) {
+    if (!token) {
       navigation.navigate('Login', { fromPayment: true });
       return;
     }
@@ -23,22 +38,32 @@ const PaymentScreen = ({ route, navigation }) => {
       const productIds = cart.map(item => item.id);
       const response = await axios.post('http://localhost:5452/achat/add', {
         idproduct: productIds,
-        iduser: user.id,
+        iduser: JSON.parse(await AsyncStorage.getItem('user')).id,
         valideachat: true
       }, {
         headers: {
-          'Authorization': `Bearer ${user.token}`,
+          'Authorization': `Bearer ${token}`,
         }
       });
 
       if (response.status === 200) {
-        await AsyncStorage.removeItem('cartItems'); // Vider le panier après paiement
-        Alert.alert('Succès', 'Paiement effectué avec succès.');
+        await AsyncStorage.removeItem('cartItems');
+        Toast.show({
+          type: 'success',
+          position: 'bottom',
+          text1: 'Succès',
+          text2: 'Paiement effectué avec succès.',
+        });
         navigation.navigate('Home');
       }
     } catch (error) {
       console.error('Erreur lors du paiement:', error);
-      Alert.alert('Erreur', 'Erreur lors du paiement. Veuillez réessayer.');
+      Toast.show({
+        type: 'error',
+        position: 'bottom',
+        text1: 'Erreur',
+        text2: 'Erreur lors du paiement. Veuillez réessayer.',
+      });
     }
   };
 
@@ -74,6 +99,7 @@ const PaymentScreen = ({ route, navigation }) => {
         <Text style={styles.info}>Montant à payer : {cart.reduce((total, item) => total + item.prix, 0)} ETH</Text>
         <Button title="Payer maintenant" onPress={handlePayment} />
       </View>
+      <Toast ref={(ref) => Toast.setRef(ref)} />
     </View>
   );
 };

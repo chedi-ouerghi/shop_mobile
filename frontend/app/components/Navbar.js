@@ -1,94 +1,45 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
-import { createDrawerNavigator, DrawerContentScrollView, DrawerItemList } from '@react-navigation/drawer';
 import { useNavigation } from '@react-navigation/native';
-import { useAuth } from '../context/AuthContext';
-import { useCart } from '../context/CartContext';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-
-const Drawer = createDrawerNavigator();
-
-const CustomDrawerContent = (props) => {
-  const { user, logout } = useAuth();
-  const { cartItems } = useCart();
-  const navigation = useNavigation();
-
-  return (
-    <DrawerContentScrollView {...props}>
-      <View style={styles.drawerHeader}>
-        <Text style={styles.drawerTitle}>OL</Text>
-      </View>
-      <DrawerItemList {...props} />
-      {!user ? (
-        <>
-          <TouchableOpacity
-            onPress={() => navigation.navigate('Login')}
-            style={styles.drawerItem}
-          >
-            <Text style={styles.drawerItemText}>Login</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            onPress={() => navigation.navigate('Register')}
-            style={styles.drawerItem}
-          >
-            <Text style={styles.drawerItemText}>Register</Text>
-          </TouchableOpacity>
-        </>
-      ) : (
-        <>
-          <TouchableOpacity
-            onPress={() => navigation.navigate('Profile')}
-            style={styles.drawerItem}
-          >
-            <Text style={styles.drawerItemText}>Profile</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            onPress={() => {
-              logout();
-              navigation.navigate('Home');
-            }}
-            style={styles.drawerItem}
-          >
-            <Text style={styles.drawerItemText}>Logout</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            onPress={() => navigation.navigate('Payment')}
-            style={styles.drawerItem}
-          >
-            <Text style={styles.drawerItemText}>Payment</Text>
-          </TouchableOpacity>
-        </>
-      )}
-      <TouchableOpacity
-        onPress={() => navigation.navigate('Cart')}
-        style={styles.drawerItem}
-      >
-        <Text style={styles.drawerItemText}>{`Cart (${cartItems.length})`}</Text>
-      </TouchableOpacity>
-    </DrawerContentScrollView>
-  );
-};
-
-const AppDrawer = () => (
-  <Drawer.Navigator drawerContent={props => <CustomDrawerContent {...props} />}>
-    <Drawer.Screen name="Home" component={HomeScreen} />
-    <Drawer.Screen name="Login" component={LoginScreen} />
-    <Drawer.Screen name="Register" component={RegisterScreen} />
-    <Drawer.Screen name="Profile" component={ProfileScreen} />
-    <Drawer.Screen name="Payment" component={PaymentScreen} />
-    <Drawer.Screen name="Cart" component={CartScreen} />
-  </Drawer.Navigator>
-);
+import { useCart } from '../context/CartContext'; 
 
 const Navbar = () => {
   const navigation = useNavigation();
+  const { cartCount } = useCart(); 
+
+  const handleNavigation = (screen) => {
+    navigation.navigate(screen);
+  };
 
   return (
     <View style={styles.navbar}>
-      <TouchableOpacity onPress={() => navigation.openDrawer()} style={styles.menuButton}>
+
+
+      <TouchableOpacity onPress={() => handleNavigation('Home')}>
+        <Text style={styles.title}>OL</Text>
+      </TouchableOpacity>
+
+      <TouchableOpacity onPress={() => handleNavigation('Alcohol')}>
+        <Text style={styles.title}>List</Text>
+      </TouchableOpacity>
+
+      <TouchableOpacity onPress={() => handleNavigation('Login')}>
+        <Text style={styles.title}>Login</Text>
+      </TouchableOpacity>
+
+      {/* Icône de panier avec badge */}
+      <TouchableOpacity onPress={() => handleNavigation('Cart')} style={styles.cartButton}>
+        <Icon name="shopping-cart" size={24} color="#FFF" />
+        {cartCount > 0 && (
+          <View style={styles.badge}>
+            <Text style={styles.badgeText}>{cartCount}</Text>
+          </View>
+        )}
+      </TouchableOpacity>
+            <TouchableOpacity style={styles.menuButton}>
         <Icon name="menu" size={24} color="#FFF" />
       </TouchableOpacity>
-      <Text style={styles.title}>OL</Text>
     </View>
   );
 };
@@ -110,23 +61,26 @@ const styles = StyleSheet.create({
   menuButton: {
     padding: 10,
   },
-  drawerHeader: {
-    padding: 20,
-    backgroundColor: '#000',
+  cartButton: {
+    position: 'relative',
+    padding: 10,
   },
-  drawerTitle: {
+  badge: {
+    position: 'absolute',
+    right: -10,
+    top: -5,
+    backgroundColor: 'red',
+    borderRadius: 10,
+    width: 20,
+    height: 20,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  badgeText: {
     color: '#FFF',
-    fontSize: 20,
+    fontSize: 12,
     fontWeight: 'bold',
-  },
-  drawerItem: {
-    paddingVertical: 15,
-    paddingHorizontal: 20,
-  },
-  drawerItemText: {
-    fontSize: 16,
-    color: '#FFF',
   },
 });
 
-export default AppDrawer;
+export default Navbar;
